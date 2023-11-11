@@ -1,5 +1,13 @@
 name: webpack-umd-release-actions-workflow
-on: push
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+      - 'c*'
+      
+permissions:
+    contents: write
 
 jobs:
   build:
