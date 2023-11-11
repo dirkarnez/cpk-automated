@@ -139,7 +139,7 @@ jobs:
           allowUpdates: true
           token: \${{ secrets.GITHUB_TOKEN }}
 `;
-            fetch(/*window.location.href.startsWith("http") ? "https://github.com/dirkarnez/cpk-automated/releases/download/v1.0.0/cpk-automated-v1.0.0.js" : */"./dist/main.js")
+            fetch(window.location.href.startsWith("http") ? "https://dirkarnez.github.io/cpk-automated/dist/cpk-automated-v1.0.0.js" : "./dist/main.js")
             .then(resp => resp.text())
             .then(data => {
                 eval(data);
