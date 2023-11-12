@@ -139,6 +139,31 @@ jobs:
           allowUpdates: true
           token: \${{ secrets.GITHUB_TOKEN }}
 `;
+
+
+        /*
+        new URL("https://github.com/simdjson/simdjson").pathname.slice(1)
+        new URL("https://github.com/simdjson/simdjson").pathname.slice(1).split("/")[1]
+
+        // Octokit.js
+// https://github.com/octokit/core.js#readme
+const octokit = new Octokit({
+  auth: 'YOUR-TOKEN'
+})
+
+await octokit.request('GET /repos/{owner}/{repo}/releases/latest', {
+  owner: 'OWNER',
+  repo: 'REPO',
+  headers: {
+    'X-GitHub-Api-Version': '2022-11-28'
+  }
+})
+
+
+//  v3.6.0
+check if it is a tag
+
+        */
             fetch(window.location.href.startsWith("http") ? "https://dirkarnez.github.io/cpk-automated/dist/cpk-automated-v1.0.0.js" : "./dist/main.js")
             .then(resp => resp.text())
             .then(data => {
