@@ -1,5 +1,5 @@
-const { Octokit } = require("octokit");
-const { Buffer } = require('buffer');
+import { Octokit } from "octokit";
+import { Buffer } from "buffer";
 
 export default function CpkAutomated() {
   this.owner = "";
@@ -79,6 +79,22 @@ export default function CpkAutomated() {
         'X-GitHub-Api-Version': '2022-11-28'
       }
     });
+  }
+
+  this.getLatestRelease = (owner, repo) => {
+    return this.myOctokit.request('GET /repos/{owner}/{repo}/releases/latest', {
+      owner: owner,
+      repo: repo,
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    })
+  }
+
+  this.getLatestTagName = (owner, repo) => {
+    return this
+      .getLatestRelease(owner, repo)
+      .then(response => response.data.tag_name)
   }
 }
 
@@ -226,3 +242,14 @@ export default function CpkAutomated() {
 //     console.log("all ok")
 //   });
 // })();
+
+(() => {
+    const authorizedCpk = new CpkAutomated().init("dirkarnez", "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");
+
+    authorizedCpk
+    .getLatestTagName("oneapi-src", "onetbb")
+    .then(latestTag => {
+      debugger;
+      console.log(latestTag);
+    });
+})();
