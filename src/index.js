@@ -242,14 +242,3 @@ export default function CpkAutomated() {
 //     console.log("all ok")
 //   });
 // })();
-
-(() => {
-    const authorizedCpk = new CpkAutomated().init("dirkarnez", "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");
-
-    authorizedCpk
-    .getLatestTagName("oneapi-src", "onetbb")
-    .then(latestTag => {
-      debugger;
-      console.log(latestTag);
-    });
-})();

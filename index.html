@@ -5,8 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+    <textarea id="libraries" name="w3review" rows="4" cols="50"></textarea>
+    <br>
+    <input id="token" type="text">
+    <br>
+    <button id="start">Start</button>
+
     <script>
-        const templateFunc = () => `name: cpp-cmake-mingw-prebuilt-release-actions-workflow
+        const templateFunc = (org, repo, tag) => `name: cpp-cmake-mingw-prebuilt-release-actions-workflow
 on:
   push:
     # Sequence of patterns matched against refs/tags
@@ -36,14 +42,14 @@ jobs:
 
     runs-on: windows-latest
     env:
-      libraryName: superlu
-      cmakeInstallationPath: superlu-installation
-      tagName: v6.0.1
+      libraryName: ${repo}
+      cmakeInstallationPath: ${repo}-installation
+      tagName: ${tag}
     steps:
     
       - uses: actions/checkout@v4
         with:
-          repository: xiaoyeli/superlu
+          repository: ${org}/${repo}
           ref: \${{ env.tagName }}
           path: \${{ env.libraryName }}
           submodules: true
@@ -139,45 +145,49 @@ jobs:
           allowUpdates: true
           token: \${{ secrets.GITHUB_TOKEN }}
 `;
+          /*
+https://github.com/libarchive/libarchive
+https://github.com/ornladios/ADIOS2
+          */
 
+          document.getElementById("start").addEventListener("click", () => {
+            const textareaValue = document.getElementById("libraries").value;
+            
+            debugger;
 
-        /*
-        new URL("https://github.com/simdjson/simdjson").pathname.slice(1)
-        new URL("https://github.com/simdjson/simdjson").pathname.slice(1).split("/")[1]
-
-        // Octokit.js
-// https://github.com/octokit/core.js#readme
-const octokit = new Octokit({
-  auth: 'YOUR-TOKEN'
-})
-
-await octokit.request('GET /repos/{owner}/{repo}/releases/latest', {
-  owner: 'OWNER',
-  repo: 'REPO',
-  headers: {
-    'X-GitHub-Api-Version': '2022-11-28'
-  }
-})
-
-
-//  v3.6.0
-check if it is a tag
-
-        */
-            fetch(window.location.href.startsWith("http") ? "https://dirkarnez.github.io/cpk-automated/dist/cpk-automated-v1.0.0.js" : "./dist/main.js")
+            fetch(window.location.href.startsWith("https://dirkarnez.github.io") ? "https://dirkarnez.github.io/cpk-automated/dist/cpk-automated-v2.0.0.js" : "./dist/main.js")
             .then(resp => resp.text())
             .then(data => {
                 eval(data);
-                new CpkAutomated.default().init("dirkarnez", "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").start(
-                    [
-                        // { repo: "testing3", workflowFilePath: ".github/workflows/build.yml", workflowFileContent: templateFunc(), tagName: "v6.0.1" },
-                        // { repo: "testing4", workflowFilePath: ".github/workflows/build.yml", workflowFileContent: templateFunc(), tagName: "v6.0.1" }
-                    ]
+
+                const authorizedCpk = new CpkAutomated.default().init("dirkarnez", document.getElementById("token").value);
+
+                Promise.all(
+                  textareaValue
+                  .split("\n")
+                  .map(library => {
+                    const repoName = new URL(library).pathname.slice(1);
+                    return authorizedCpk
+                    .getLatestTagName(repoName.split("/")[0], repoName.split("/")[1])
+                    .then(latestTag => ({org: repoName.split("/")[0], repo: repoName.split("/")[1], latestTag}))
+                  })
                 )
+                .then(info => authorizedCpk
+                  .start(
+                    info.map(item => (
+                      { 
+                        repo: `${item.repo}-prebuilt`, 
+                        workflowFilePath: ".github/workflows/build.yml", 
+                        workflowFileContent: templateFunc(item.org, item.repo, item.latestTag), 
+                        tagName: item.latestTag
+                      }
+                    ))
+                ))
                 .then(responseList => {
                     console.log("all ok")
                 });
             })
+          });
     </script>
 </body>
 </html>
