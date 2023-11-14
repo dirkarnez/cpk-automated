@@ -17,8 +17,7 @@ on:
   push:
     # Sequence of patterns matched against refs/tags
     tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
-      - 'c*'
+      - '*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 permissions:
     contents: write
@@ -169,20 +168,28 @@ https://github.com/ornladios/ADIOS2
                     const repoName = new URL(library).pathname.slice(1);
                     return authorizedCpk
                     .getLatestTagName(repoName.split("/")[0], repoName.split("/")[1])
-                    .then(latestTag => ({org: repoName.split("/")[0], repo: repoName.split("/")[1], latestTag}))
+                    .then(latestTag => {
+                        const org = repoName.split("/")[0];
+                        const repo = repoName.split("/")[1];
+                        return ({
+                            org: org,
+                            repo: repo,
+                            latestTag: !!latestTag ? latestTag : (window.open(`${library}`, "_blank") && prompt(`input tag for ${org}/${repo}`))
+                        })
+                    })
                   })
                 )
-                .then(info => authorizedCpk
-                  .start(
-                    info.map(item => (
-                      { 
-                        repo: `${item.repo}-prebuilt`, 
-                        workflowFilePath: ".github/workflows/build.yml", 
-                        workflowFileContent: templateFunc(item.org, item.repo, item.latestTag), 
-                        tagName: item.latestTag
-                      }
-                    ))
-                ))
+                .then(info => {
+                    return authorizedCpk
+                        .start(info.map(item => (
+                        { 
+                            repo: `${item.repo}-prebuilt`, 
+                            workflowFilePath: ".github/workflows/build.yml", 
+                            workflowFileContent: templateFunc(item.org, item.repo, item.latestTag), 
+                            tagName: item.latestTag
+                          }))
+                        )
+                )
                 .then(responseList => {
                     console.log("all ok")
                 });
