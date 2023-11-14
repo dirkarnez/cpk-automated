@@ -168,6 +168,7 @@ https://github.com/ornladios/ADIOS2
                     const repoName = new URL(library).pathname.slice(1);
                     return authorizedCpk
                     .getLatestTagName(repoName.split("/")[0], repoName.split("/")[1])
+                    .catch(err => console.error(err))
                     .then(latestTag => {
                         const org = repoName.split("/")[0];
                         const repo = repoName.split("/")[1];
@@ -187,8 +188,8 @@ https://github.com/ornladios/ADIOS2
                             workflowFilePath: ".github/workflows/build.yml", 
                             workflowFileContent: templateFunc(item.org, item.repo, item.latestTag), 
                             tagName: item.latestTag
-                          }))
-                        )
+                        }))
+                    )
                 })
                 .then(responseList => {
                     console.log("all ok")
