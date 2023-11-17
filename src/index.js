@@ -81,6 +81,17 @@ export default function CpkAutomated() {
     });
   }
 
+  this.getDescription = (owner, repo) => {
+    return this.myOctokit.request('GET /repos/{owner}/{repo}', {
+      owner: owner,
+      repo: repo,
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    })
+    .then(data => data.data.description)
+  }
+
   this.getLatestRelease = (owner, repo) => {
     return this.myOctokit.request('GET /repos/{owner}/{repo}/releases/latest', {
       owner: owner,
