@@ -154,7 +154,7 @@ https://github.com/ornladios/ADIOS2
             
             debugger;
 
-            fetch(window.location.href.startsWith("https://dirkarnez.github.io") ? "https://dirkarnez.github.io/cpk-automated/dist/cpk-automated-v2.0.0.js" : "./dist/main.js")
+            fetch(window.location.href.startsWith("https://dirkarnez.github.io") ? "https://dirkarnez.github.io/cpk-automated/dist/cpk-automated-v3.0.0.js" : "./dist/main.js")
             .then(resp => resp.text())
             .then(data => {
                 eval(data);
@@ -166,6 +166,7 @@ https://github.com/ornladios/ADIOS2
                   .split("\n")
                   .map(library => {
                     const repoName = new URL(library).pathname.slice(1);
+
                     return authorizedCpk
                     .getLatestTagName(repoName.split("/")[0], repoName.split("/")[1])
                     .catch(err => console.error(err))
@@ -173,22 +174,35 @@ https://github.com/ornladios/ADIOS2
                         const org = repoName.split("/")[0];
                         const repo = repoName.split("/")[1];
                         return ({
-                            org: org,
-                            repo: repo,
-                            latestTag: !!latestTag ? latestTag : (window.open(`${library}`, "_blank") && prompt(`input tag for ${org}/${repo}`))
+                          org: org,
+                          repo: repo,
+                          latestTag: !!latestTag ? latestTag : (window.open(`${library}`, "_blank") && prompt(`input tag for ${org}/${repo}`))
                         })
+                    })
+                    .then(info => {
+                      return authorizedCpk.getDescription(info.org, info.repo)
+                      .then(description => {
+                        return ({
+                          ...info,
+                          description
+                        })
+                      })
                     })
                   })
                 )
-                .then(info => {
+                .then(infoList => {
                     return authorizedCpk
-                        .start(info.map(item => (
+                        .start(infoList.map(item => (
                         { 
-                            repo: `${item.repo}-prebuilt`, 
+                            owner: item.org,
+                            repo: item.repo,
+                            cpkRepo: `${item.repo}-prebuilt`, 
+                            readmeContent: `${item.repo}-prebuilt\n${Array(`${item.repo}-prebuilt`.length).fill("=").join("")}\nPrebuilt of [${item.org}/${item.repo}: ${item.description}](https://github.com/${item.org}/${item.repo})\n\n### Playground\n- [dirkarnez/${item.repo}-playground](https://github.com/dirkarnez/${item.repo}-playground)`,
                             workflowFilePath: ".github/workflows/build.yml", 
                             workflowFileContent: templateFunc(item.org, item.repo, item.latestTag), 
                             tagName: item.latestTag
                         }))
+                        // [boostorg/boost: Super-project for modularized Boost]()
                     )
                 })
                 .then(responseList => {
