@@ -12,7 +12,7 @@ export default function CpkAutomated() {
   };
 
   this.start = (array) => {
-    return Promise.all(array.map(({readmeContent, cpkRepo, workflowFilePath, workflowFileContent, tagName}) => 
+    return Promise.all(array.map(({readmeContent, cpkRepo, workflowFilePath, workflowFileContent, cpkRepoTag}) => 
       this.newRepo(cpkRepo, false)
       .then(response => (
         Promise.all([
@@ -22,7 +22,7 @@ export default function CpkAutomated() {
         .then(() => ({ name: response.data.name }))
       ))
       .then(response => {
-        return this.release(response.name, tagName)
+        return this.release(response.name, cpkRepoTag)
       })
     ))
   }
