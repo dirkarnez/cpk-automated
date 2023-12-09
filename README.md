@@ -5,5 +5,8 @@
 ### TODOs
 - [ ] `configure(.ac)` detection
 - [ ] `CMakeLists.txt` detection
+- [ ] `Makefile` detection
+- [ ] Docker automation
+- [ ] [dirkarnez/cmake-imported-library-generator](https://github.com/dirkarnez/cmake-imported-library-generator)
 - [ ] auto set latest commit as tag if no release
 - [ ] auto `CMakeLists.txt` generation
