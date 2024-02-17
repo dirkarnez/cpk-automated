@@ -190,12 +190,13 @@ https://github.com/ornladios/ADIOS2
                     })
                     .then(info => {
                       return authorizedCpk.getDescription(info.org, info.repo)
-                      .then(description => {
-                        return ({
-                          ...info,
-                          description
-                        })
-                      })
+                          .catch(err => console.error(err))
+                          .then(description => {
+                              return ({
+                                  ...info,
+                                  description
+                              })
+                          })
                     })
                   })
                 )
