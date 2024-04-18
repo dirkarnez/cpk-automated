@@ -124,8 +124,10 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release ^
             -DBUILD_SHARED_LIBS=OFF ^
             -DCMAKE_INSTALL_PREFIX="cmake-build/\${{ env.cmakeInstallationPath }}" -B./cmake-build &&^
-            cmake.exe -LH > cmake-build\\\${{ env.cmakeInstallationPath }}\\cmake-lh-export.txt &&^
-            cd cmake-build && ( cmake --build . --config Release && cmake --install .  || type .\\CMakeFiles\\CMakeError.log )  
+            cd cmake-build && ( cmake --build . --config Release && cmake --install .  || type .\\CMakeFiles\\CMakeError.log )  &&^
+            cd .. &&^
+            cmake.exe -LH > cmake-build\\\${{ env.cmakeInstallationPath }}\\cmake-lh-export.txt
+            
  
   # -DOpenSSL_DIR="%CD_LINUX%/openssl-v3.1.3-x86_64-8.1.0-release-posix-seh-rt_v6-rev0" ^
   # -DZLIB_ROOT="%CD_LINUX%/zlib-v1.2.13-mingw64-x86_64-posix-seh-rev0-8.1.0" ^
