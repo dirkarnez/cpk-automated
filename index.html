@@ -207,7 +207,7 @@ https://github.com/ornladios/ADIOS2
                             owner: item.org,
                             repo: item.repo,
                             cpkRepo: `${item.repo}-prebuilt`, 
-                            readmeContent: `${item.repo}-prebuilt\n${Array(`${item.repo}-prebuilt`.length).fill("=").join("")}\n![](https://github.com/dirkarnez/${item.repo}-prebuilt/actions/workflows/build.yml/badge.svg)\nPrebuilt of [${item.org}/${item.repo}: ${item.description}](https://github.com/${item.org}/${item.repo})\n\n### Playground\n- [dirkarnez/${item.repo}-playground](https://github.com/dirkarnez/${item.repo}-playground)`,
+                            readmeContent: `${item.repo}-prebuilt\n${Array(`${item.repo}-prebuilt`.length).fill("=").join("")}\n![](https://github.com/dirkarnez/${item.repo}-prebuilt/actions/workflows/build.yml/badge.svg)\n\nPrebuilt of [${item.org}/${item.repo}: ${item.description}](https://github.com/${item.org}/${item.repo})\n\n### Playground\n- [dirkarnez/${item.repo}-playground](https://github.com/dirkarnez/${item.repo}-playground)`,
                             workflowFilePath: ".github/workflows/build.yml", 
                             workflowFileContent: templateFunc(item.org, item.repo, item.latestTag), 
                             tagName: item.latestTag,
