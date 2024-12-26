@@ -8,6 +8,8 @@
 - [ ] yaml should not be in html file but can be injected in workflow
 - [ ] `configure(.ac)` detection
 - [ ] `CMakeLists.txt` detection
+- [ ] installable `CMakeList.txt` generation
+  - single header: [clay/CMakeLists.txt at main · dirkarnez/clay](https://github.com/dirkarnez/clay/blob/main/CMakeLists.txt)
 - [ ] `Makefile` detection
 - [ ] Docker automation
 - [ ] [dirkarnez/cmake-imported-library-generator](https://github.com/dirkarnez/cmake-imported-library-generator)
