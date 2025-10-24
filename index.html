@@ -3,9 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style> 
+    div {
+        -webkit-box-sizing: border-box;
+           -moz-box-sizing: border-box;
+                box-sizing: border-box;
+    }
+    
+    textarea {
+      width: 100%;
+          -webkit-box-sizing: border-box;
+           -moz-box-sizing: border-box;
+                box-sizing: border-box;
+    }
+    .textarea-wrapper {
+      width: 100%;
+      /*border: 1px solid blue;*/
+    }
+    
+    </style>
 </head>
 <body>
-    <textarea id="libraries" name="w3review" rows="4" cols="50"></textarea>
+    <div class="textarea-wrapper">
+        <textarea id="libraries" name="w3review" cols="50"></textarea>
+    </div>
     <br>
     <input id="token" type="text">
     <br>
