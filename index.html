@@ -198,7 +198,7 @@ https://github.com/ornladios/ADIOS2
 
                     return authorizedCpk
                     .getLatestTagName(repoName.split("/")[0], repoName.split("/")[1])
-                    .catch(err => console.error(err))
+                    .catch(err => error(err))
                     .then(latestTag => {
                         const org = repoName.split("/")[0];
                         const repo = repoName.split("/")[1];
@@ -219,7 +219,7 @@ https://github.com/ornladios/ADIOS2
                     })
                     .then(info => {
                       return authorizedCpk.getDescription(info.org, info.repo)
-                          .catch(err => console.error(err))
+                          .catch(err => error(err))
                           .then(description => {
                               return ({
                                   ...info,
@@ -246,7 +246,7 @@ https://github.com/ornladios/ADIOS2
                     )
                 })
                 .then(responseList => {
-                    console.log("all ok")
+                    log("all ok")
                 });
             })
           });
