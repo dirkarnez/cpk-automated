@@ -24,15 +24,23 @@
     </style>
 </head>
 <body>
+    <a href="https://github.com/dirkarnez/cpk-automated" target="_blank">dirkarnez/cpk-automated</a><br>
     <div class="textarea-wrapper">
         <textarea id="libraries" name="w3review" cols="50"></textarea>
     </div>
     <br>
-    <input id="token" type="text">
+    <input id="token" type="text" style="width: 100%;">
     <br>
-    <button id="start">Start</button>
-
+    <button id="start" style="width: 100%;">Start</button>
+    <div id="container" style="background: black; color: white; fontFamily: consolas; min-height: 1em; whiteSpace: pre-line"></div>
+    <br/>
     <script>
+        const div = document.getElementById("container");
+        const log = (...data) => div.innerHTML += `${data.join(String.fromCharCode(0x20))}<br>`;
+        const error = (...data) => div.innerHTML += `<span style="color: red">${data.join(String.fromCharCode(0x20))}<span><br>`;
+        // log(1,2,3);
+        // error(1,2,3);
+        
         const templateFunc = (org, repo, tag) => `name: cpp-cmake-mingw-prebuilt-release-actions-workflow
 on:
   push:
