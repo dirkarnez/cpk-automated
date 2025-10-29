@@ -1,47 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style> 
-    div {
-        -webkit-box-sizing: border-box;
-           -moz-box-sizing: border-box;
-                box-sizing: border-box;
-    }
-    
-    textarea {
-      width: 100%;
-          -webkit-box-sizing: border-box;
-           -moz-box-sizing: border-box;
-                box-sizing: border-box;
-    }
-    .textarea-wrapper {
-      width: 100%;
-      /*border: 1px solid blue;*/
-    }
-    
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height">
+  <script src="./blob-stream.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
+
 <body>
-    <a href="https://github.com/dirkarnez/cpk-automated" target="_blank">dirkarnez/cpk-automated</a><br>
-    <div class="textarea-wrapper">
-        <textarea id="libraries" name="w3review" cols="50"></textarea>
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col">
+        <a href="https://github.com/dirkarnez/cpk-automated" target="_blank">dirkarnez/cpk-automated</a><br>
+        <textarea class="form-control" placeholder="https://github.com/DaveGamble/cJSON" id="libraries" cols="50"></textarea>
+        <br>
+        <input id="token" class="form-control" placeholder="ghp_xxxx" type="text" style="width: 100%;">
+        <br>
+        <button type="button" class="btn btn-primary" id="start"
+          style="width: 100%; margin-top: 10px; margin-bottom: 10px;">Start</button>
+        <div id="container"
+          style="background: black; color: white; font-family: consolas; min-height: 1em; white-space: pre-line"></div>
+      </div>
     </div>
-    <br>
-    <input id="token" type="text" style="width: 100%;">
-    <br>
-    <button id="start" style="width: 100%;">Start</button>
-    <div id="container" style="background: black; color: white; fontFamily: consolas; min-height: 1em; whiteSpace: pre-line"></div>
-    <br/>
-    <script>
-        const div = document.getElementById("container");
-        const log = (...data) => div.innerHTML += `${data.join(String.fromCharCode(0x20))}<br>`;
-        const error = (...data) => div.innerHTML += `<span style="color: red">${data.join(String.fromCharCode(0x20))}<span><br>`;
-        // log(1,2,3);
-        // error(1,2,3);
-        
-        const templateFunc = (org, repo, tag) => `name: cpp-cmake-mingw-prebuilt-release-actions-workflow
+  </div>
+
+
+  <script>
+    const div = document.getElementById("container");
+    const log = (...data) => div.innerHTML += `${data.join(String.fromCharCode(0x20))}<br>`;
+    const error = (...data) => div.innerHTML += `<span style="color: red">${data.join(String.fromCharCode(0x20))}<span><br>`;
+    // log(1,2,3);
+    // error(1,2,3);
+
+    const templateFunc = (org, repo, tag) => `name: cpp-cmake-mingw-prebuilt-release-actions-workflow
 on:
   push:
     # Sequence of patterns matched against refs/tags
@@ -173,83 +167,84 @@ jobs:
           allowUpdates: true
           token: \${{ secrets.GITHUB_TOKEN }}
 `;
-          /*
+    /*
 https://github.com/libarchive/libarchive
 https://github.com/ornladios/ADIOS2
-          */
+    */
 
-          document.getElementById("start").addEventListener("click", () => {
-            const textareaValue = document.getElementById("libraries").value;
-            
-            debugger;
+    document.getElementById("start").addEventListener("click", () => {
+      const textareaValue = document.getElementById("libraries").value;
 
-            fetch(window.location.href.startsWith("https://dirkarnez.github.io") ? "https://dirkarnez.github.io/cpk-automated/dist/cpk-automated-v4.0.0.js" : "./dist/main.js")
-            .then(resp => resp.text())
-            .then(data => {
-                eval(data);
+      debugger;
 
-                const authorizedCpk = new CpkAutomated.default().init("dirkarnez", document.getElementById("token").value);
+      fetch(window.location.href.startsWith("https://dirkarnez.github.io") ? "https://dirkarnez.github.io/cpk-automated/dist/cpk-automated-v4.0.0.js" : "./dist/main.js")
+        .then(resp => resp.text())
+        .then(data => {
+          eval(data);
 
-                Promise.all(
-                  textareaValue
-                  .split("\n")
-                  .map(library => {
-                    const repoName = new URL(library).pathname.slice(1);
+          const authorizedCpk = new CpkAutomated.default().init("dirkarnez", document.getElementById("token").value);
 
-                    return authorizedCpk
-                    .getLatestTagName(repoName.split("/")[0], repoName.split("/")[1])
-                    .catch(err => error(err))
-                    .then(latestTag => {
-                        const org = repoName.split("/")[0];
-                        const repo = repoName.split("/")[1];
-                        
-                        return ({
-                          org: org,
-                          repo: repo,
-                            ...(!!latestTag ? ({latestTag: latestTag, cpkRepoTag: latestTag}) : (() => {
-                              window.open(`${library}`, "_blank");
-                              const input = prompt(`input tag for ${org}/${repo}`);
-                              if (!!input.match(/^c[0-9a-fA-F]{40}$/g)) {
-                                  return ({latestTag: input.slice(1), cpkRepoTag: input});
-                              } else {
-                                  return  ({latestTag: input, cpkRepoTag: input});
-                              }
-                          })())
-                        });
-                    })
-                    .then(info => {
-                      return authorizedCpk.getDescription(info.org, info.repo)
-                          .catch(err => error(err))
-                          .then(description => {
-                              return ({
-                                  ...info,
-                                  description
-                              })
-                          })
-                    })
+          Promise.all(
+            textareaValue
+              .split("\n")
+              .map(library => {
+                const repoName = new URL(library).pathname.slice(1);
+
+                return authorizedCpk
+                  .getLatestTagName(repoName.split("/")[0], repoName.split("/")[1])
+                  .catch(err => error(err))
+                  .then(latestTag => {
+                    const org = repoName.split("/")[0];
+                    const repo = repoName.split("/")[1];
+
+                    return ({
+                      org: org,
+                      repo: repo,
+                      ...(!!latestTag ? ({ latestTag: latestTag, cpkRepoTag: latestTag }) : (() => {
+                        window.open(`${library}`, "_blank");
+                        const input = prompt(`input tag for ${org}/${repo}`);
+                        if (!!input.match(/^c[0-9a-fA-F]{40}$/g)) {
+                          return ({ latestTag: input.slice(1), cpkRepoTag: input });
+                        } else {
+                          return ({ latestTag: input, cpkRepoTag: input });
+                        }
+                      })())
+                    });
                   })
+                  .then(info => {
+                    return authorizedCpk.getDescription(info.org, info.repo)
+                      .catch(err => error(err))
+                      .then(description => {
+                        return ({
+                          ...info,
+                          description
+                        })
+                      })
+                  })
+              })
+          )
+            .then(infoList => {
+              return authorizedCpk
+                .start(infoList.map(item => (
+                  {
+                    owner: item.org,
+                    repo: item.repo,
+                    cpkRepo: `${item.repo}-prebuilt`,
+                    readmeContent: `${item.repo}-prebuilt\n${Array(`${item.repo}-prebuilt`.length).fill("=").join("")}\n![](https://github.com/dirkarnez/${item.repo}-prebuilt/actions/workflows/build.yml/badge.svg)\n\nPrebuilt of [${item.org}/${item.repo}: ${item.description}](https://github.com/${item.org}/${item.repo})\n\n### Playground\n- [dirkarnez/${item.repo}-playground](https://github.com/dirkarnez/${item.repo}-playground)`,
+                    workflowFilePath: ".github/workflows/build.yml",
+                    workflowFileContent: templateFunc(item.org, item.repo, item.latestTag),
+                    tagName: item.latestTag,
+                    cpkRepoTag: item.cpkRepoTag
+                  }))
+                  // [boostorg/boost: Super-project for modularized Boost]()
                 )
-                .then(infoList => {
-                    return authorizedCpk
-                        .start(infoList.map(item => (
-                        { 
-                            owner: item.org,
-                            repo: item.repo,
-                            cpkRepo: `${item.repo}-prebuilt`, 
-                            readmeContent: `${item.repo}-prebuilt\n${Array(`${item.repo}-prebuilt`.length).fill("=").join("")}\n![](https://github.com/dirkarnez/${item.repo}-prebuilt/actions/workflows/build.yml/badge.svg)\n\nPrebuilt of [${item.org}/${item.repo}: ${item.description}](https://github.com/${item.org}/${item.repo})\n\n### Playground\n- [dirkarnez/${item.repo}-playground](https://github.com/dirkarnez/${item.repo}-playground)`,
-                            workflowFilePath: ".github/workflows/build.yml", 
-                            workflowFileContent: templateFunc(item.org, item.repo, item.latestTag), 
-                            tagName: item.latestTag,
-                            cpkRepoTag: item.cpkRepoTag
-                        }))
-                        // [boostorg/boost: Super-project for modularized Boost]()
-                    )
-                })
-                .then(responseList => {
-                    log("all ok")
-                });
             })
-          });
-    </script>
+            .then(responseList => {
+              log("all ok")
+            });
+        })
+    });
+  </script>
 </body>
+
 </html>
