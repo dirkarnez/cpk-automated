@@ -186,8 +186,6 @@ https://github.com/ornladios/ADIOS2
             textareaValue
               .split("\n")
               .map(library => {
-                const  = ;
-
                 return Promise.try(() => new URL(library).pathname.slice(1))
                   .then(repoName => authorizedCpk.getLatestTagName(repoName.split("/")[0], repoName.split("/")[1]))
                   .catch(err => error(err))
