@@ -188,18 +188,14 @@ https://github.com/ornladios/ADIOS2
             textareaValue
               .split("\n")
               .map(library => {
-                return Promise.try(() => new URL(library).pathname.slice(1))
+                return Promise
+                  .try(() => new URL(library).pathname.slice(1))
                   .then(repoName => {
                     return authorizedCpk.getLatestTagName(repoName.split("/")[0], repoName.split("/")[1])
                     .then(latestTag => ({
                       latestTag,
                       repoName
-                    })).catch(e => {
-                      debugger;
-                    })
-                  })
-                  .catch(err => {
-                    error(err);
+                    }))
                   })
                   .then(({latestTag, repoName}) => {
                     const org = repoName.split("/")[0];
