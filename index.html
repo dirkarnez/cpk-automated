@@ -187,9 +187,14 @@ https://github.com/ornladios/ADIOS2
               .split("\n")
               .map(library => {
                 return Promise.try(() => new URL(library).pathname.slice(1))
-                  .then(repoName => authorizedCpk.getLatestTagName(repoName.split("/")[0], repoName.split("/")[1]))
+                  .then(repoName => authorizedCpk.getLatestTagName(repoName.split("/")[0], repoName.split("/")[1])
+                    .then(latestTag => ({
+                      latestTag,
+                      repoName
+                    }))
+                  )
                   .catch(err => error(err))
-                  .then(latestTag => {
+                  .then(({latestTag, repoName}) => {
                     const org = repoName.split("/")[0];
                     const repo = repoName.split("/")[1];
                     return ({
