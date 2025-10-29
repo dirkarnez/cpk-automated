@@ -196,6 +196,7 @@ https://github.com/ornladios/ADIOS2
                       latestTag,
                       repoName
                     }))
+                    .catch(err => error(err))
                   })
                   .catch(err => error(err))
                   .then(({latestTag, repoName}) => {
