@@ -29,6 +29,7 @@
 
   <script>
     const div = document.getElementById("container");
+    const clear = () => div.innerHTML = ``;
     const log = (...data) => div.innerHTML += `${data.join(String.fromCharCode(0x20))}<br>`;
     const error = (...data) => div.innerHTML += `<span style="color: red">${data.join(String.fromCharCode(0x20))}<span><br>`;
     // log(1,2,3);
@@ -171,32 +172,33 @@ https://github.com/libarchive/libarchive
 https://github.com/ornladios/ADIOS2
     */
 
-    document.getElementById("start").addEventListener("click", () => {
+    const buttonStart = document.getElementById("start");
+    buttonStart.addEventListener("click", () => {
       const textareaValue = document.getElementById("libraries").value;
 
       fetch(window.location.href.startsWith("https://dirkarnez.github.io") ? "https://dirkarnez.github.io/cpk-automated/dist/cpk-automated-v5.0.0.js" : "./dist/main.js")
         .then(resp => resp.text())
         .then(data => {
           eval(data);
+          clear();
+          buttonStart.disabled = true;
           const authorizedCpk = new CpkAutomated.default().init("dirkarnez", document.getElementById("token").value);
 
-          Promise.all(
+          return Promise.all(
             textareaValue
               .split("\n")
               .map(library => {
                 return Promise.try(() => new URL(library).pathname.slice(1))
-                  .then(repoName => authorizedCpk.getLatestTagName(repoName.split("/")[0], repoName.split("/")[1])
+                  .then(repoName => {
+                    return authorizedCpk.getLatestTagName(repoName.split("/")[0], repoName.split("/")[1])
                     .then(latestTag => ({
                       latestTag,
                       repoName
-                    }))
-                    .catch(err => {
+                    })).catch(e => {
                       debugger;
-                      error(err)
                     })
-                  )
+                  })
                   .catch(err => {
-                    debugger;
                     error(err);
                   })
                   .then(({latestTag, repoName}) => {
@@ -228,7 +230,7 @@ https://github.com/ornladios/ADIOS2
                   })
               })
           )
-            .then(infoList => {
+          .then(infoList => {
               return authorizedCpk
                 .start(infoList.map(item => (
                   {
@@ -243,10 +245,15 @@ https://github.com/ornladios/ADIOS2
                   }))
                   // [boostorg/boost: Super-project for modularized Boost]()
                 )
-            })
-            .then(responseList => {
-              log("all ok")
-            });
+                .catch(err => error(err))
+          })
+          .then(responseList => {
+            log("all ok")
+          })
+          .catch(err => error(err))
+        })
+        .finally(() => {
+          buttonStart.disabled = false;
         })
     });
   </script>

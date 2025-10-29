@@ -12,18 +12,21 @@ export default function CpkAutomated() {
   };
 
   this.start = (array) => {
-    return Promise.all(array.map(({readmeContent, cpkRepo, workflowFilePath, workflowFileContent, cpkRepoTag}) => 
-      this.newRepo(cpkRepo, false)
-      .then(response => (
-        Promise.all([
-          this.addNewFileToRepo(response.data.name, workflowFilePath, `- add ${workflowFilePath}`, workflowFileContent),
-          this.addNewFileToRepo(response.data.name, "README.md", `- add README.md`, readmeContent)
-        ])
-        .then(() => ({ name: response.data.name }))
-      ))
-      .then(response => {
-        return this.release(response.name, cpkRepoTag)
-      })
+    return Promise.all(
+      array.map(({readmeContent, cpkRepo, workflowFilePath, workflowFileContent, cpkRepoTag}) => {
+        return this
+          .newRepo(cpkRepo, false)
+          .then(response => (
+            Promise.all([
+              this.addNewFileToRepo(response.data.name, workflowFilePath, `- add ${workflowFilePath}`, workflowFileContent),
+              this.addNewFileToRepo(response.data.name, "README.md", `- add README.md`, readmeContent)
+            ])
+            .then(() => ({ name: response.data.name }))
+          ))
+          .then(response => {
+            return this.release(response.name, cpkRepoTag)
+          })
+      }
     ))
   }
 
