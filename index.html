@@ -174,9 +174,7 @@ https://github.com/ornladios/ADIOS2
     document.getElementById("start").addEventListener("click", () => {
       const textareaValue = document.getElementById("libraries").value;
 
-      debugger;
-
-      fetch(window.location.href.startsWith("https://dirkarnez.github.io") ? "https://dirkarnez.github.io/cpk-automated/dist/cpk-automated-v4.0.0.js" : "./dist/main.js")
+      fetch(window.location.href.startsWith("https://dirkarnez.github.io") ? "https://dirkarnez.github.io/cpk-automated/dist/cpk-automated-v5.0.0.js" : "./dist/main.js")
         .then(resp => resp.text())
         .then(data => {
           eval(data);
@@ -192,8 +190,15 @@ https://github.com/ornladios/ADIOS2
                       latestTag,
                       repoName
                     }))
+                    .catch(err => {
+                      debugger;
+                      error(err)
+                    })
                   )
-                  .catch(err => error(err))
+                  .catch(err => {
+                    debugger;
+                    error(err);
+                  })
                   .then(({latestTag, repoName}) => {
                     const org = repoName.split("/")[0];
                     const repo = repoName.split("/")[1];
