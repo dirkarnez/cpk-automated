@@ -197,6 +197,7 @@ https://github.com/ornladios/ADIOS2
                       repoName
                     }))
                   })
+                  .catch(err => error(err))
                   .then(({latestTag, repoName}) => {
                     const org = repoName.split("/")[0];
                     const repo = repoName.split("/")[1];
