@@ -181,22 +181,20 @@ https://github.com/ornladios/ADIOS2
         .then(resp => resp.text())
         .then(data => {
           eval(data);
-
           const authorizedCpk = new CpkAutomated.default().init("dirkarnez", document.getElementById("token").value);
 
           Promise.all(
             textareaValue
               .split("\n")
               .map(library => {
-                const repoName = new URL(library).pathname.slice(1);
+                const  = ;
 
-                return authorizedCpk
-                  .getLatestTagName(repoName.split("/")[0], repoName.split("/")[1])
+                return Promise.try(() => new URL(library).pathname.slice(1))
+                  .then(repoName => authorizedCpk.getLatestTagName(repoName.split("/")[0], repoName.split("/")[1]))
                   .catch(err => error(err))
                   .then(latestTag => {
                     const org = repoName.split("/")[0];
                     const repo = repoName.split("/")[1];
-
                     return ({
                       org: org,
                       repo: repo,
