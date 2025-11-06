@@ -192,11 +192,11 @@ https://github.com/ornladios/ADIOS2
                   .try(() => new URL(library).pathname.slice(1))
                   .then(repoName => {
                     return authorizedCpk.getLatestTagName(repoName.split("/")[0], repoName.split("/")[1])
+                    .catch(err => error(err))
                     .then(latestTag => ({
                       latestTag,
                       repoName
                     }))
-                    .catch(err => error(err))
                   })
                   .catch(err => error(err))
                   .then(({latestTag, repoName}) => {
