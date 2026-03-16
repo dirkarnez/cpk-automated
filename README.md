@@ -1,6 +1,12 @@
 [cpk-automated](https://dirkarnez.github.io/cpk-automated)
 ==========================================================
 [GitHub REST API documentation - GitHub Docs](https://docs.github.com/en/rest?apiVersion=2022-11-28)
+### Libraries to do
+- [ ] https://github.com/solvespace/pixman
+- [ ] https://github.com/solvespace/cairo
+- [ ] https://github.com/solvespace/libdxfrw
+- [ ] https://github.com/solvespace/angle
+- [ ] https://github.com/solvespace/solvespace
 
 ### TODOs
 - [ ] write `local-build.cmd` and `setup.cmd` scripts instead
