@@ -25,3 +25,6 @@
 
 ### Tutorials
 - [qpdf/external-libs](https://github.com/qpdf/external-libs)
+
+
+<!-- Security scan triggered at 2026-09-15 09:37:51 -->
